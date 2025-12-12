@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Quiz = require('../models/quiz.model');
 
 // @desc    Create a new quiz
@@ -42,6 +43,10 @@ exports.getQuizzes = async (req, res) => {
 // @access  Private
 exports.getQuizById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid quiz id' });
+    }
+
     const quiz = await Quiz.findById(req.params.id).populate('createdBy', 'username');
     
     if (!quiz) {

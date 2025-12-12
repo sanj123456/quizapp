@@ -13,18 +13,16 @@ const {
 
 // Public routes
 router.get('/', getQuizzes);
-router.get('/:id', auth, getQuizById);
 
 // Protected routes (require authentication)
-router.use(auth);
-
-// User-specific routes
-router.get('/my-quizzes', getMyQuizzes);
+// NOTE: Keep specific routes BEFORE '/:id' to avoid treating them as ids.
+router.get('/my-quizzes', auth, getMyQuizzes);
+router.get('/:id', auth, getQuizById);
 
 // Admin routes (require admin role)
-router.post('/', admin, createQuiz);
-router.put('/:id', updateQuiz);
-router.delete('/:id', deleteQuiz);
-router.post('/:id/questions', addQuestion);
+router.post('/', auth, admin, createQuiz);
+router.put('/:id', auth, updateQuiz);
+router.delete('/:id', auth, deleteQuiz);
+router.post('/:id/questions', auth, addQuestion);
 
 module.exports = router;
