@@ -72,6 +72,10 @@ exports.updateQuiz = async (req, res) => {
   try {
     const { title, description, questions, isPublished } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid quiz id' });
+    }
+
     let quiz = await Quiz.findById(req.params.id);
     
     if (!quiz) {
@@ -102,6 +106,10 @@ exports.updateQuiz = async (req, res) => {
 // @access  Private/Admin
 exports.deleteQuiz = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid quiz id' });
+    }
+
     const quiz = await Quiz.findById(req.params.id);
     
     if (!quiz) {
@@ -113,7 +121,7 @@ exports.deleteQuiz = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to delete this quiz' });
     }
 
-    await quiz.remove();
+    await quiz.deleteOne();
     res.json({ message: 'Quiz removed' });
   } catch (error) {
     console.error('Delete quiz error:', error);
@@ -127,6 +135,10 @@ exports.deleteQuiz = async (req, res) => {
 exports.addQuestion = async (req, res) => {
   try {
     const { questionType, question, options, correctAnswer, points } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid quiz id' });
+    }
 
     const quiz = await Quiz.findById(req.params.id);
     
